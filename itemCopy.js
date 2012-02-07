@@ -226,7 +226,7 @@ function getCourseItemsLeft()
                                  $(leftCourseXML).find("item data").each(function()
                                  {
                                     //Check if it is not a module item.
-                                    if ($(this).children("parent").text() != "DEFAULT")
+                                    if (($(this).children("type").length > 0) && ($(this).children("parent").text() != "DEFAULT"))
                                     {
                                        //Create an option element in the DOM.
                                        var toAdd = document.createElement("option");
