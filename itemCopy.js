@@ -205,6 +205,7 @@ function getCourseItemsLeft()
                                  {
                                     if (($(this).children("type").length < 0) && ($(this).children("parent").text() != "DEFAULT"))
                                     {
+                                       alert($(this));
                                        //Create an optgroup for the folder
                                        var toAdd = document.createElement("optgroup");
                                        //Set the class attribute to secondLevel
@@ -225,7 +226,7 @@ function getCourseItemsLeft()
                                  $(leftCourseXML).find("item data").each(function()
                                  {
                                     //Check if it is not a module item.
-                                    if ($(this).children("parent").text() != "DEFAULT")
+                                    if (($(this).children("type").length > 0) && ($(this).children("parent").text() != "DEFAULT"))
                                     {
                                        //Create an option element in the DOM.
                                        var toAdd = document.createElement("option");
