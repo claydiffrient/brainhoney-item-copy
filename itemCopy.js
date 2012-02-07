@@ -205,6 +205,7 @@ function getCourseItemsLeft()
                                  {
                                     if (($(this).children("type").length < 0) && ($(this).children("parent").text() != "DEFAULT"))
                                     {
+                                       alert("yes");
                                        //Create an optgroup for the folder
                                        var toAdd = document.createElement("optgroup");
                                        //Set the class attribute to secondLevel
