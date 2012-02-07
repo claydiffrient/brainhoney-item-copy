@@ -220,7 +220,7 @@ function getCourseItemsLeft()
                                     }
 
                                     
-                                 }
+                                 });
                                  
                                  $(leftCourseXML).find("item data").each(function()
                                  {
