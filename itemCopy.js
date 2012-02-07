@@ -200,6 +200,28 @@ function getCourseItemsLeft()
                                  }
                                  );
                                  
+                                 //Check for Folders.  If so then add as an optgroup with class .secondLevel
+                                 $(leftCourseXML).find("item data").each(function()
+                                 {
+                                    if (($(this).children("type").length < 0) && ($(this).children("parent").text() != "DEFAULT"))
+                                    {
+                                       //Create an optgroup for the folder
+                                       var toAdd = document.createElement("optgroup");
+                                       //Set the class attribute to secondLevel
+                                       toAdd.setAttribute("class", "secondLevel");
+                                       //Set the id atttribute
+                                       toAdd.setAttribute("id", $(this).parent().attr("id") + "_left");
+                                       //Set the label attribute
+                                       toAdd.setAttribute("label", $(this).find("title").text());
+                                       //Set the variable for the item to which needs adding
+                                       var toAddToID = "" + $(this).children("parent").text() + "_left";
+                                       //Link the new group to the existing groups
+                                       $("#" + toAddToID).append(toAdd);
+                                    }
+
+                                    
+                                 }
+                                 
                                  $(leftCourseXML).find("item data").each(function()
                                  {
                                     //Check if it is not a module item.
