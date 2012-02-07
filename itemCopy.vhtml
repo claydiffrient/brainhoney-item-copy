@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Copy Items</title>
+<link href="itemCopy.css" rel="stylesheet" type="text/css" />
+<link href="http://byui.brainhoney.com/Resource/14853/Web/Style/ilearn.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="/Resource/14853/Web/JS/jquery-1.6.1.min.js"></script>
+<script type="text/javascript" src="/Resource/14853/Web/JS/helper.js"></script>
+<script type="text/javascript" src="itemCopy.js" ></script>
+</head>
+
+<body onload="showVariables()">
+
+<div id="header" class="center">
+<h1>Copy Items Test</h1>
+</div>
+
+<div id="mainContent">
+	
+   <div id="leftCourse" class="components center">
+      <div class="blueHead">
+         <span class="caps leftHead">Copy From:</span>
+      </div>
+      <div id="leftID">
+         <select id="chooseLeft" onchange="changeCourseID('left')" >
+            <option value="DEFAULT" selected="selected">Choose a course...</option>
+         </select>
+      </div>
+      <select id="leftList" size="8"></select>
+   </div>
+   
+   <div id="rightCourse" class="components center">
+      <div class="blueHead">
+         <span class="caps leftHead">Copy To:</span>
+      </div>
+      <div id="rightID">
+         <select id="chooseRight" onchange="changeCourseID('right')" >
+            <option value="DEFAULT" selected="selected">Choose a course...</option>
+         </select>
+      </div>
+      <select id="rightList" size="8"></select>
+   </div>
+   
+   <div id="buttonsContainer">
+      <div id="buttons">
+         <button type="button"  value="Copy" onclick="copyItemToRight()">Copy</button>
+      </div>
+   </div>
+</div>
+
+</body>
+</html>

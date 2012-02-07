@@ -1,0 +1,72 @@
+/* CSS Style */
+
+.center 
+{
+	text-align: center;
+}
+
+#mainContent
+{
+	width: 90%;
+	margin: auto;
+	padding: 50px;
+   height: 500px;
+}
+
+#rightCourse
+{
+	float: right;
+	width: 45%;
+   height: 100%;
+}
+
+#leftCourse
+{
+	float:left;
+	width:45%;
+   height: 100%;
+}
+
+#buttonsContainer
+{
+	width: 75px;
+	margin: auto;
+	text-align:center;
+   height: 100%;
+}
+
+#buttons
+{
+   margin-top: 200px;
+   margin-bottom: auto;
+}
+
+button 
+{
+  color: #0077BB;
+  border: 1px solid #0077BB;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+button:hover
+{
+   color: #fff;
+   border: 1px solid #fff;
+   font-weight: bold;
+   background-color: #0077BB;
+}
+
+
+select
+{
+   width: 98%;
+   height: 88%;
+   margin: 2px;
+}
+
+#header
+{
+	clear: both;
+   font-size: 2em;
+}
