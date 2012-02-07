@@ -400,7 +400,6 @@ function copyItemToRight()
    if (resourceXML.length > 0)
       resourceXML += "</requests>";
    
-   alert(resourceXML);
       //Uses the Frame API to initiate the DLAP to copy the item.
       FRAME_API.executeCommand("copyitems", null,
                         { method: 'POST',
@@ -431,7 +430,7 @@ function copyItemToRight()
                                        if (success && response.details[0].code == 'OK' && response.details[1].code == 'OK')
                                        {
                                           //Things to do if resources were successful.
-                                          //alert("Copy Resources Successful");
+                                          alert("Copy Resources Successful");
                                        }
                                        else
                                        {
