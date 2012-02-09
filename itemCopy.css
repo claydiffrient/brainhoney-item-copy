@@ -5,6 +5,11 @@
 	text-align: center;
 }
 
+.secondLevel
+{
+   padding-left: 20px;
+}
+
 #mainContent
 {
 	width: 90%;
@@ -70,3 +75,35 @@ select
 	clear: both;
    font-size: 2em;
 }
+
+/***********Start Version 2 CSS **********************/
+
+.moduleItem
+{
+   font-weight: bold;
+   text-align: left;
+   background-color: #0077BB;
+   color: #fff;
+}
+
+.folderItem
+{
+   font-weight: bold;
+   text-align: left;
+   padding-left: 10px;
+}
+
+.courseItem
+{
+   padding-left: 10px;
+   text-align: left;
+}
+
+.ui-selectee, .ui-selectable ul
+{
+   margin: 1px 0px 1px 0px;
+   border: 1px solid;
+}
+  
+.ui-selecting { background: #FECA40; }
+.ui-selected { background: #F39814; color: white; }

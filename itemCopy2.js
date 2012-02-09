@@ -92,6 +92,8 @@ function showVariables()
 {
    listCourses();
    changeCourseID();
+   $("#leftList").selectable();
+   $("#rightList").selectable();
 }
 
 /*****************************************************************************
@@ -161,21 +163,7 @@ function clearList()
 function getCourseItemsLeft()
 {
    //Clears the list to remove any items in the course listing.
-      //Determines the length of the options list.
-   var leftLength = document.getElementById("leftList").options.length;
-
-	//Checks to see if there are any items in the left listing currently.
-   if (leftLength != 0)
-   {
-      //Removes any modules.
-      $("#leftList").empty();
-     
-      //Loop to remove items.
-      for(leftLength - 1; leftLength >= 0; leftLength--)
-      {
-         document.getElementById("leftList").options[leftLength] = null;
-      }
-   }
+   $("#leftList").empty();
    
    //Uses the frame API to run a the DLAP command to return the Item List for the Left Course.
 	FRAME_API.executeCommand("getitemlist",
@@ -195,26 +183,28 @@ function getCourseItemsLeft()
                                     //Check to see if it is a module.  If so add it as a Optgroup.
                                     if ($(this).text() == "DEFAULT")
                                     {
-                                       $("#leftList").append('<optgroup id=\"' + $(this).parent().parent().attr("id") + "_left" + '\" label=\"' + $(this).parent().parent().attr("id") + "_left -" + $(this).parent().parent().find("title").text() + '\" ></optgroup>');
+                                       $("#leftList").append('<ul class=\"moduleItem\" id=\"' + $(this).parent().parent().attr("id") + "_left" + '\">' + $(this).parent().parent().attr("id") + "_left -" + $(this).parent().parent().find("title").text() + '</li>');
                                     }
                                  }
                                  );
                                  
-                                 //Check for Folders.  If so then add as an optgroup with class .secondLevel
+                                 
+                              //Loop through 5 times to pick up any folders up to 5 levels in.
+                              for (counter = 0; counter < 5; counter++)
+                              {
                                  $(leftCourseXML).find("item data").each(function()
                                  {
-                                    alert ($(this).text());
+                                    //Check for Folders.  If so then add as an optgroup with class .folderItem
                                     if (($(this).children("type").length <= 0) && ($(this).children("parent").text() != "DEFAULT"))
                                     {
-                                       alert("Within");
                                        //Create an optgroup for the folder
-                                       var toAdd = document.createElement("optgroup");
-                                       //Set the class attribute to secondLevel
-                                       toAdd.setAttribute("class", "secondLevel");
+                                       var toAdd = document.createElement("ul");
+                                       //Set the class attribute to folderItem
+                                       toAdd.setAttribute("class", "folderItem");
                                        //Set the id atttribute
                                        toAdd.setAttribute("id", $(this).parent().attr("id") + "_left");
                                        //Set the label attribute
-                                       toAdd.setAttribute("label", $(this).find("title").text());
+                                       toAdd.innerHTML = $(this).find("title").text();
                                        //Set the variable for the item to which needs adding
                                        var toAddToID = "" + $(this).children("parent").text() + "_left";
                                        //Link the new group to the existing groups
@@ -223,14 +213,15 @@ function getCourseItemsLeft()
 
                                     
                                  });
-                                 
+                              }
+                               
                                  $(leftCourseXML).find("item data").each(function()
                                  {
                                     //Check if it is not a module item.
                                     if (($(this).children("type").length > 0) && ($(this).children("parent").text() != "DEFAULT"))
                                     {
                                        //Create an option element in the DOM.
-                                       var toAdd = document.createElement("option");
+                                       var toAdd = document.createElement("li");
                                        //Set title of the option to the item title and the type in parentheses.
                                        toAdd.innerHTML = $(this).find("title").text() + ' (' + $(this).find("type").text() + ') ';
                                        //Set the "id" attribute of the opton to the item's id.
