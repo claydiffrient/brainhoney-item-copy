@@ -23,6 +23,7 @@
 	float: right;
 	width: 45%;
    height: 100%;
+
 }
 
 #leftCourse
@@ -30,6 +31,7 @@
 	float:left;
 	width:45%;
    height: 100%;
+
 }
 
 #buttonsContainer
@@ -107,3 +109,5 @@ select
   
 .ui-selecting { background: #FECA40; }
 .ui-selected { background: #F39814; color: white; }
+
+

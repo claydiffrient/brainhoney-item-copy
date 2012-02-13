@@ -5,10 +5,13 @@
 <link href="itemCopy.css" rel="stylesheet" type="text/css" />
 <link href="http://byui.brainhoney.com/Resource/14853/Web/Style/ilearn.css" rel="stylesheet" type="text/css" />
 <link href="http://byui.brainhoney.com/Resource/7291918/css/start/jquery-ui-1.8.17.custom.css" rel="stylesheet" type="text/css" />
+<link href="http://byui.brainhoney.com/Resource/7291918/dynatree/src/skin/ui.dynatree.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="/Resource/14853/Web/JS/jquery-1.6.1.min.js"></script>
 <script type="text/javascript" src="http://byui.brainhoney.com/Resource/7291918/jquery-ui-1.8.17.custom.min.js"></script>
 <script type="text/javascript" src="/Resource/14853/Web/JS/helper.js"></script>
+<script type="text/javascript" src="/Resource/7291918/dynatree/src/jquery.dynatree.js"></script>
 <script type="text/javascript" src="itemCopy2.js" ></script>
+<script type="text/javascript" src="https://raw.github.com/padolsey/prettyPrint.js/master/prettyprint.js"></script>
 </head>
 
 <body onload="showVariables()">
@@ -19,7 +22,7 @@
 
 <div id="mainContent">
 	
-   <div id="leftCourse" class="components center">
+   <div id="leftCourse" class="components">
       <div class="blueHead">
          <span class="caps leftHead">Copy From:</span>
       </div>
@@ -31,7 +34,7 @@
       <div id="leftList"></div>
    </div>
    
-   <div id="rightCourse" class="components center">
+   <div id="rightCourse" class="components">
       <div class="blueHead">
          <span class="caps leftHead">Copy To:</span>
       </div>
@@ -49,6 +52,6 @@
       </div>
    </div>
 </div>
-
+<div id="debug"></div>
 </body>
 </html>

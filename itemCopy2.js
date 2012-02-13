@@ -18,6 +18,18 @@ var GLOBAL_LEFT_XML;
 var GLOBAL_RIGHT_XML;
 
 /*****************************************************************************
+* Function to initialize the list
+*****************************************************************************/
+$(function()
+  {
+     $("#leftList").dynatree(
+                    {
+                       generateIds: true,
+                       idPrefix: "left_"                       
+                     });
+   });
+
+/*****************************************************************************
 * Course is a constructor for a "Course" Object.  It simply contains a course
 * title as well as the course id. (It's basically like the old C structs.
 *****************************************************************************/
@@ -92,8 +104,6 @@ function showVariables()
 {
    listCourses();
    changeCourseID();
-   $("#leftList").selectable();
-   $("#rightList").selectable();
 }
 
 /*****************************************************************************
@@ -162,8 +172,10 @@ function clearList()
 *****************************************************************************/
 function getCourseItemsLeft()
 {
+   //Get the root node for the tree.
+   var leftRootNode = $("#leftList").dynatree("getRoot");
    //Clears the list to remove any items in the course listing.
-   $("#leftList").empty();
+   leftRootNode.removeChildren();
    
    //Uses the frame API to run a the DLAP command to return the Item List for the Left Course.
 	FRAME_API.executeCommand("getitemlist",
@@ -180,58 +192,64 @@ function getCourseItemsLeft()
 											//Uses jQuery to find all the modules
                                  $(leftCourseXML).find("item data parent").each(function()
                                  {
-                                    //Check to see if it is a module.  If so add it as a Optgroup.
+                                    
+                                    //Check to see if it is a module.  If so add it as a ul with no parent.
                                     if ($(this).text() == "DEFAULT")
                                     {
-                                       $("#leftList").append('<ul class=\"moduleItem\" id=\"' + $(this).parent().parent().attr("id") + "_left" + '\">' + $(this).parent().parent().attr("id") + "_left -" + $(this).parent().parent().find("title").text() + '</li>');
+                                       leftRootNode.addChild(
+                                       {
+                                          title: $(this).parent().parent().find("title").text() ,
+                                          tooltip: $(this).parent().parent().find("title").text() + " - " + $(this).parent().parent().attr("id"),
+                                          isFolder: true,
+                                          key: $(this).parent().parent().attr("id")
+                                       });
                                     }
                                  }
                                  );
                                  
-                                 
-                              //Loop through 5 times to pick up any folders up to 5 levels in.
-                              for (counter = 0; counter < 5; counter++)
+             /* START FOLDER LOOP                    
+                           //Loop through 5 times to pick up any folders up to 5 levels in.
+                           for (counter = 0; counter < 5; counter++)
+                           {
+                              $(leftCourseXML).find("item data").each(function()
                               {
-                                 $(leftCourseXML).find("item data").each(function()
+                                 //Check for Folders.  If so then add to the tree.
+                                 if (($(this).children("type").length <= 0) && ($(this).children("parent").text() != "DEFAULT"))
                                  {
-                                    //Check for Folders.  If so then add as an optgroup with class .folderItem
-                                    if (($(this).children("type").length <= 0) && ($(this).children("parent").text() != "DEFAULT"))
+                                    alert($(this).children("parent").text());
+                                    var nodeToAddTo = $("#leftList").dynatree("getTree").getNodeByKey($(this).children("parent").text());
+                                    nodeToAddTo.addChild(
                                     {
-                                       //Create an optgroup for the folder
-                                       var toAdd = document.createElement("ul");
-                                       //Set the class attribute to folderItem
-                                       toAdd.setAttribute("class", "folderItem");
-                                       //Set the id atttribute
-                                       toAdd.setAttribute("id", $(this).parent().attr("id") + "_left");
-                                       //Set the label attribute
-                                       toAdd.innerHTML = $(this).find("title").text();
-                                       //Set the variable for the item to which needs adding
-                                       var toAddToID = "" + $(this).children("parent").text() + "_left";
-                                       //Link the new group to the existing groups
-                                       $("#" + toAddToID).append(toAdd);
-                                    }
-
-                                    
-                                 });
-                              }
-                               
+                                       title: $(this).find("title").text(),
+                                       key: $(this).parent().attr("id"),
+                                       isFolder: true,
+                                       tooltip: $(this).find("title").text() + " - " + $(this).parent().attr("id")
+                                    });
+                                 }
+                              });
+                              
+                           }
+            */
                                  $(leftCourseXML).find("item data").each(function()
                                  {
                                     //Check if it is not a module item.
-                                    if (($(this).children("type").length > 0) && ($(this).children("parent").text() != "DEFAULT"))
+                                  //  if (($(this).children("type").length > 0) && ($(this).children("parent").text() != "DEFAULT"))
                                     {
-                                       //Create an option element in the DOM.
-                                       var toAdd = document.createElement("li");
-                                       //Set title of the option to the item title and the type in parentheses.
-                                       toAdd.innerHTML = $(this).find("title").text() + ' (' + $(this).find("type").text() + ') ';
-                                       //Set the "id" attribute of the opton to the item's id.
-                                       toAdd.setAttribute("id", "" + $(this).parent().attr("id") + "_left");
-                                       var toAddToID = "" + $(this).children("parent").text() + "_left";
-                                       //Link the option to the proper module optgroup.
-                                       $("#" + toAddToID).append(toAdd);
+                                       toAddTo = $("#leftList").dynatree("getTree").getNodeByKey($(this).children("parent").text());
+                                       toAddTo.addChild(
+                                       {
+                                          title: $(this).find("title").text() ,
+                                          tooltip: $(this).find("title").text() + " - " + $(this).parent().attr("id"),
+                                          isFolder: false,
+                                          key: $(this).parent().attr("id")
+                                       });
                                     }
+                                       debugData = prettyPrint(toAddTo);
+                                       debugData2 = prettyPrint($(this));
+                                       document.getElementById("debug").appendChild(debugData);
+                                       document.getElementById("debug").appendChild(debugData2);
                                  }
-                                 );     
+                                 );
                               }   
 										else
 										{
