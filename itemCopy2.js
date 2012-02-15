@@ -76,12 +76,12 @@ function listCourses()
                                     var toAdd = document.createElement("option");
                                     //Create another option for the second list.
                                     var toAdd2 = document.createElement("option");
-                                    //Set title of the option to the item title and the type in parentheses.      
-                                    toAdd.innerHTML = courses[i].courseTitle;
-                                    toAdd2.innerHTML = courses[i].courseTitle;
                                     //Set the "id" attribute of the option to the item's id.
                                     toAdd.setAttribute("id", courses[i].courseID);
                                     toAdd2.setAttribute("id", courses[i].courseID);
+                                    //Set title of the option to the item title and the type in parentheses.      
+                                    toAdd.innerHTML = courses[i].courseTitle + " - " + toAdd.id;
+                                    toAdd2.innerHTML = courses[i].courseTitle + " - " + toAdd.id;
                                     //Add the course to the proper selection box.
                                     $("#chooseLeft").append(toAdd);
                                     $("#chooseRight").append(toAdd2);
@@ -229,13 +229,17 @@ function getCourseItemsLeft()
                               });
                               
                            }
-            */
+            */                   console.log("XML Doc");
+                                 console.log(leftCourseXML);
                                  $(leftCourseXML).find("item data").each(function()
                                  {
                                     //Check if it is not a module item.
-                                  //  if (($(this).children("type").length > 0) && ($(this).children("parent").text() != "DEFAULT"))
+                                    if (($(this).children("type").length > 0) && ($(this).children("parent").text() != "DEFAULT"))
                                     {
                                        toAddTo = $("#leftList").dynatree("getTree").getNodeByKey($(this).children("parent").text());
+                                       console.log($(this).text());
+                                       console.log("Parent of before\n");
+                                       console.log($(this).parent().text());
                                        toAddTo.addChild(
                                        {
                                           title: $(this).find("title").text() ,
@@ -244,10 +248,7 @@ function getCourseItemsLeft()
                                           key: $(this).parent().attr("id")
                                        });
                                     }
-                                       debugData = prettyPrint(toAddTo);
-                                       debugData2 = prettyPrint($(this));
-                                       document.getElementById("debug").appendChild(debugData);
-                                       document.getElementById("debug").appendChild(debugData2);
+
                                  }
                                  );
                               }   
