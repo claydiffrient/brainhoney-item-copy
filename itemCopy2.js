@@ -207,7 +207,7 @@ function getCourseItemsLeft()
                                  }
                                  );
                                  
-             /* START FOLDER LOOP                    
+                           //START FOLDER LOOP                    
                            //Loop through 5 times to pick up any folders up to 5 levels in.
                            for (counter = 0; counter < 5; counter++)
                            {
@@ -216,37 +216,80 @@ function getCourseItemsLeft()
                                  //Check for Folders.  If so then add to the tree.
                                  if (($(this).children("type").length <= 0) && ($(this).children("parent").text() != "DEFAULT"))
                                  {
-                                    alert($(this).children("parent").text());
                                     var nodeToAddTo = $("#leftList").dynatree("getTree").getNodeByKey($(this).children("parent").text());
-                                    nodeToAddTo.addChild(
+                                    var nullCheck = $(nodeToAddTo).length;
+                                    if (nullCheck > 0)
                                     {
-                                       title: $(this).find("title").text(),
-                                       key: $(this).parent().attr("id"),
-                                       isFolder: true,
-                                       tooltip: $(this).find("title").text() + " - " + $(this).parent().attr("id")
-                                    });
+                                       nodeToAddTo.addChild(
+                                       {
+                                          title: $(this).find("title").text(),
+                                          key: $(this).parent().attr("id"),
+                                          isFolder: true,
+                                          tooltip: $(this).find("title").text() + " - " + $(this).parent().attr("id")
+                                       });
+                                    }
                                  }
                               });
                               
                            }
-            */                   console.log("XML Doc");
-                                 console.log(leftCourseXML);
+                           //END FOLDER LOOP
+
                                  $(leftCourseXML).find("item data").each(function()
                                  {
-                                    //Check if it is not a module item.
+                                    //Check if it is not a module item or a folder.
                                     if (($(this).children("type").length > 0) && ($(this).children("parent").text() != "DEFAULT"))
                                     {
+                                       //Get the Parent Node
                                        toAddTo = $("#leftList").dynatree("getTree").getNodeByKey($(this).children("parent").text());
-                                       console.log($(this).text());
-                                       console.log("Parent of before\n");
-                                       console.log($(this).parent().text());
-                                       toAddTo.addChild(
+                                       //Check to make sure the parent node is not null.
+                                       var nullCheck = $(toAddTo).length;
+                                       if (nullCheck > 0)
                                        {
-                                          title: $(this).find("title").text() ,
-                                          tooltip: $(this).find("title").text() + " - " + $(this).parent().attr("id"),
-                                          isFolder: false,
-                                          key: $(this).parent().attr("id")
-                                       });
+                                         //set the icon file name to a null value.
+                                         var iconFileName = "";
+                                         //Switch on the type from the XML storing it to iconFileName
+                                         switch ($(this).find("type").text())
+                                         {
+                                             case "Assessment":
+                                                iconFileName = "assessment.gif";
+                                                break;
+                                             case "Assignment":
+                                                iconFileName = "assignment.gif";
+                                                break;                                                
+                                             case "Discussion":
+                                                iconFileName = "discussion.gif";
+                                                break;
+                                             case "Journal":
+                                                iconFileName = "journal.gif";
+                                                break;
+                                             case "Wiki":
+                                                iconFileName = "wiki.gif";
+                                                break;
+                                             case "Blog":
+                                                iconFileName = "blog.gif";
+                                                break;
+                                             case "Resource":
+                                                iconFileName = "editable_content.gif";
+                                                break;
+                                             case "CustomActivity":
+                                                iconFileName = "custom_activity.gif";
+                                                break;
+                                             case "AssetLink":
+                                                iconFileName = "link.gif";
+                                                break;
+                                             default:
+                                                break;
+                                          }
+                                          //Add the item to the proper parent.
+                                          toAddTo.addChild(
+                                          {
+                                             title: $(this).find("title").text() ,
+                                             tooltip: $(this).find("title").text() + " - " + $(this).parent().attr("id"),
+                                             isFolder: false,
+                                             key: $(this).parent().attr("id"),
+                                             icon: iconFileName
+                                          });
+                                       }
                                     }
 
                                  }
