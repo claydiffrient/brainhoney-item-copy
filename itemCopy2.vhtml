@@ -6,12 +6,14 @@
 <link href="http://byui.brainhoney.com/Resource/14853/Web/Style/ilearn.css" rel="stylesheet" type="text/css" />
 <link href="http://byui.brainhoney.com/Resource/7291918/css/start/jquery-ui-1.8.17.custom.css" rel="stylesheet" type="text/css" />
 <link href="http://byui.brainhoney.com/Resource/7291918/dynatree/src/skin/ui.dynatree.css" rel="stylesheet" type="text/css" />
+<link href="/Resource/14853/Web/JS/fancybox/jquery.fancybox.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="/Resource/14853/Web/JS/jquery-1.6.1.min.js"></script>
 <script type="text/javascript" src="http://byui.brainhoney.com/Resource/7291918/jquery-ui-1.8.17.custom.min.js"></script>
 <script type="text/javascript" src="/Resource/14853/Web/JS/helper.js"></script>
 <script type="text/javascript" src="/Resource/7291918/dynatree/src/jquery.dynatree.js"></script>
 <script type="text/javascript" src="itemCopy2.js" ></script>
-<script type="text/javascript" src="https://raw.github.com/padolsey/prettyPrint.js/master/prettyprint.js"></script>
+<script type="text/javascript" src="/Resource/14853/Web/JS/fancybox/jquery.fancybox.pack.js"></script>
+
 </head>
 
 <body onload="showVariables()">

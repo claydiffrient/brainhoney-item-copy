@@ -25,9 +25,79 @@ $(function()
      $("#leftList").dynatree(
                     {
                        generateIds: true,
-                       idPrefix: "left_"                       
+                       idPrefix: "left_",
+                       onDblClick: openPreviewLinkLeft,
+                       selectMode: 2
                      });
+     $("#rightList").dynatree(
+               {
+                  generateIds: true,
+                  idPrefix: "right_",
+                  onDblClick: openPreviewLinkRight,
+                  selectMode: 2
+                });
    });
+   
+/*****************************************************************************
+* openPreviewLinkLeft will open a preview link when an item is double clicked
+*****************************************************************************/
+function openPreviewLinkLeft(node, event)
+{
+   //Generate information for the preview link
+   //Create the link variable and start with the link information.
+   var previewLink = document.createElement("a");
+   previewLink.setAttribute("class", "popUpPreview fancybox.iframe");
+   
+   //Find the count for the number of enrollments the user has.
+   var loopCount = FRAME_API.enrollments.length;
+   
+   //Loop through to find the enrollment ID of the current course.
+   var courseEnrollment;
+   for (i = 0; i < loopCount; i++)
+   {
+      if (LEFT_COURSE_ID == FRAME_API.enrollments[i].courseId)
+         courseEnrollment = FRAME_API.enrollments[i].id;
+   }
+   //Start building the actual preview link
+   var builtLink = "http://byui.brainhoney.com/Component/ActivityPlayer?enrollmentid="
+   //Append the enrollmentid to the preview link.
+   builtLink += courseEnrollment;
+   builtLink += "&itemid=";
+   builtLink += node.data.key;
+   builtLink += "&showheader=false";
+   console.log(builtLink);
+   $.fancybox.open({href: builtLink, title:'Item Preview'}, {type: "iframe"});
+}
+
+/*****************************************************************************
+* openPreviewLinkRight will open a preview link when an item is double clicked
+*****************************************************************************/
+function openPreviewLinkRight(node, event)
+{
+   //Generate information for the preview link
+   //Create the link variable and start with the link information.
+   var previewLink = document.createElement("a");
+   previewLink.setAttribute("class", "popUpPreview fancybox.iframe");
+   
+   //Find the count for the number of enrollments the user has.
+   var loopCount = FRAME_API.enrollments.length;
+   
+   //Loop through to find the enrollment ID of the current course.
+   var courseEnrollment;
+   for (i = 0; i < loopCount; i++)
+   {
+      if (RIGHT_COURSE_ID == FRAME_API.enrollments[i].courseId)
+         courseEnrollment = FRAME_API.enrollments[i].id;
+   }
+   //Start building the actual preview link
+   var builtLink = "http://byui.brainhoney.com/Component/ActivityPlayer?enrollmentid="
+   //Append the enrollmentid to the preview link.
+   builtLink += courseEnrollment;
+   builtLink += "&itemid=";
+   builtLink += node.data.key;
+   builtLink += "&showheader=false";
+   $.fancybox.open({href: builtLink, title:'Item Preview'}, {type: "iframe"});
+}
 
 /*****************************************************************************
 * Course is a constructor for a "Course" Object.  It simply contains a course
@@ -80,8 +150,8 @@ function listCourses()
                                     toAdd.setAttribute("id", courses[i].courseID);
                                     toAdd2.setAttribute("id", courses[i].courseID);
                                     //Set title of the option to the item title and the type in parentheses.      
-                                    toAdd.innerHTML = courses[i].courseTitle + " - " + toAdd.id;
-                                    toAdd2.innerHTML = courses[i].courseTitle + " - " + toAdd.id;
+                                    toAdd.innerHTML = courses[i].courseTitle;
+                                    toAdd2.innerHTML = courses[i].courseTitle;
                                     //Add the course to the proper selection box.
                                     $("#chooseLeft").append(toAdd);
                                     $("#chooseRight").append(toAdd2);
@@ -220,13 +290,19 @@ function getCourseItemsLeft()
                                     var nullCheck = $(nodeToAddTo).length;
                                     if (nullCheck > 0)
                                     {
-                                       nodeToAddTo.addChild(
+                                       //Check if the folder already exists
+                                       var folderThereCheck = $("#leftList").dynatree("getTree").getNodeByKey($(this).parent().attr("id"));
+                                       folderThereCheck = $(folderThereCheck).length;
+                                       if (folderThereCheck <= 0)
                                        {
-                                          title: $(this).find("title").text(),
-                                          key: $(this).parent().attr("id"),
-                                          isFolder: true,
-                                          tooltip: $(this).find("title").text() + " - " + $(this).parent().attr("id")
-                                       });
+                                          nodeToAddTo.addChild(
+                                          {
+                                             title: $(this).find("title").text(),
+                                             key: $(this).parent().attr("id"),
+                                             isFolder: true,
+                                             tooltip: $(this).find("title").text() + " - " + $(this).parent().attr("id")
+                                          });
+                                       }
                                     }
                                  }
                               });
@@ -309,21 +385,13 @@ function getCourseItemsLeft()
 * data, and then list them in the right box.
 *****************************************************************************/
 function getCourseItemsRight()
-{	
-   //Determines the length of the options list.
-   var rightLength = document.getElementById("rightList").options.length;
-   //Checks to see if there are any items in the right listing currently.
-   if (rightLength != 0)
-   {
-      //Removes any modules.
-      $("#rightList").empty();
-      //Loop to remove items.
-      for(rightLength - 1; rightLength >= 0; rightLength--)
-      {
-         document.getElementById("rightList").options[rightLength] = null;
-      } 
-   }
- 	//Uses the frame API to run a the DLAP command to return the Item List for the Right Course.
+{
+   //Get the root node for the tree.
+   var rightRootNode = $("#rightList").dynatree("getRoot");
+   //Clears the list to remove any items in the course listing.
+   rightRootNode.removeChildren();
+   
+   //Uses the frame API to run a the DLAP command to return the Item List for the Left Course.
 	FRAME_API.executeCommand("getitemlist",
 	                        { entityid: RIGHT_COURSE_ID },
 									{ callback: function(options, success, response)
@@ -333,36 +401,119 @@ function getCourseItemsRight()
 										{
 											//Stores the XML to a more accurately named variable.
 											var rightCourseXML = response.responseXML;
-                                 //Stores the XML to use in the global scope.
+                                 //Stores the XML for use in the global scope.
                                  GLOBAL_RIGHT_XML = rightCourseXML;
 											//Uses jQuery to find all the modules
                                  $(rightCourseXML).find("item data parent").each(function()
                                  {
-                                    //Check to see if it is a module.  If so add it as a Optgroup.
+                                    
+                                    //Check to see if it is a module.  If so add it as a ul with no parent.
                                     if ($(this).text() == "DEFAULT")
                                     {
-                                       $("#rightList").append('<optgroup id=\"' + $(this).parent().parent().attr("id") + "_right" + '\" label=\"' + $(this).parent().parent().find("title").text() + '\" ></optgroup>');
+                                       rightRootNode.addChild(
+                                       {
+                                          title: $(this).parent().parent().find("title").text() ,
+                                          tooltip: $(this).parent().parent().find("title").text() + " - " + $(this).parent().parent().attr("id"),
+                                          isFolder: true,
+                                          key: $(this).parent().parent().attr("id")
+                                       });
                                     }
                                  }
                                  );
                                  
-                                 $(rightCourseXML).find("item data").each(function()
+                           //START FOLDER LOOP                    
+                           //Loop through 5 times to pick up any folders up to 5 levels in.
+                           for (counter = 0; counter < 5; counter++)
+                           {
+                              $(rightCourseXML).find("item data").each(function()
+                              {
+                                 //Check for Folders.  If so then add to the tree.
+                                 if (($(this).children("type").length <= 0) && ($(this).children("parent").text() != "DEFAULT"))
                                  {
-                                    //Check if it is not a module item.
-                                    if ($(this).children("parent").text() != "DEFAULT")
+                                    var nodeToAddTo = $("#rightList").dynatree("getTree").getNodeByKey($(this).children("parent").text());
+                                    var nullCheck = $(nodeToAddTo).length;
+                                    if (nullCheck > 0)
                                     {
-                                       //Create an option element in the DOM.
-                                       var toAdd = document.createElement("option");
-                                       //Set title of the option to the item title and the type in parentheses.
-                                       toAdd.innerHTML = $(this).find("title").text() + ' (' + $(this).find("type").text() + ') ';
-                                       //Set the "id" attribute of the opton to the item's id.
-                                       toAdd.setAttribute("id", "" + $(this).parent().attr("id") + "_right");
-                                       var toAddToID = "" + $(this).children("parent").text() + "_right";
-                                       //Link the option to the proper module optgroup.
-                                       $("#" + toAddToID).append(toAdd);
+                                       //Check if the folder already exists
+                                       var folderThereCheck = $("#rightList").dynatree("getTree").getNodeByKey($(this).parent().attr("id"));
+                                       folderThereCheck = $(folderThereCheck).length;
+                                       if (folderThereCheck <= 0)
+                                       {
+                                          nodeToAddTo.addChild(
+                                          {
+                                             title: $(this).find("title").text(),
+                                             key: $(this).parent().attr("id"),
+                                             isFolder: true,
+                                             tooltip: $(this).find("title").text() + " - " + $(this).parent().attr("id")
+                                          });
+                                       }
                                     }
                                  }
-                                 );     
+                              });
+                              
+                           }
+                           //END FOLDER LOOP
+
+                                 $(rightCourseXML).find("item data").each(function()
+                                 {
+                                    //Check if it is not a module item or a folder.
+                                    if (($(this).children("type").length > 0) && ($(this).children("parent").text() != "DEFAULT"))
+                                    {
+                                       //Get the Parent Node
+                                       toAddTo = $("#rightList").dynatree("getTree").getNodeByKey($(this).children("parent").text());
+                                       //Check to make sure the parent node is not null.
+                                       var nullCheck = $(toAddTo).length;
+                                       if (nullCheck > 0)
+                                       {
+                                         //set the icon file name to a null value.
+                                         var iconFileName = "";
+                                         //Switch on the type from the XML storing it to iconFileName
+                                         switch ($(this).find("type").text())
+                                         {
+                                             case "Assessment":
+                                                iconFileName = "assessment.gif";
+                                                break;
+                                             case "Assignment":
+                                                iconFileName = "assignment.gif";
+                                                break;                                                
+                                             case "Discussion":
+                                                iconFileName = "discussion.gif";
+                                                break;
+                                             case "Journal":
+                                                iconFileName = "journal.gif";
+                                                break;
+                                             case "Wiki":
+                                                iconFileName = "wiki.gif";
+                                                break;
+                                             case "Blog":
+                                                iconFileName = "blog.gif";
+                                                break;
+                                             case "Resource":
+                                                iconFileName = "editable_content.gif";
+                                                break;
+                                             case "CustomActivity":
+                                                iconFileName = "custom_activity.gif";
+                                                break;
+                                             case "AssetLink":
+                                                iconFileName = "link.gif";
+                                                break;
+                                             default:
+                                                break;
+                                          }                                         
+                                          //Add the item to the proper parent.
+                                          toAddTo.addChild(
+                                          {
+                                             title: $(this).find("title").text(),
+                                             tooltip: $(this).find("title").text() + " - " + $(this).parent().attr("id"),
+                                             isFolder: false,
+                                             key: $(this).parent().attr("id"),
+                                             icon: iconFileName
+                                          });
+                                       }
+                                    }
+
+                                 }
+                                 );
                               }   
 										else
 										{
@@ -380,7 +531,9 @@ function getCourseItemsRight()
 *****************************************************************************/
 function copyItemToRight()
 {
-   //Finds index value of the selected item.
+  alert($(leftList).getSelectedNodes());
+  /*
+  //Finds index value of the selected item.
    var itemIndexSelected = document.getElementById("leftList").selectedIndex;
    //Finds the ID of the selected item.
    var selectedID = document.getElementById("leftList").options.item(itemIndexSelected).id;
@@ -519,4 +672,6 @@ function copyItemToRight()
 
    //Run getCourseItemsRight() to refresh the copied to list.
    getCourseItemsRight();
+   */
 }
+         
