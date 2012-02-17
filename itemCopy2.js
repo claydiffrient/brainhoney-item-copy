@@ -27,13 +27,18 @@ $(function()
                        generateIds: true,
                        idPrefix: "left_",
                        onDblClick: openPreviewLinkLeft,
+                       onClick: function(node, event)
+                                {
+                                   if(! node.data.isFolder)
+                                      node.toggleSelect();
+                                },
                        selectMode: 2
                      });
      $("#rightList").dynatree(
                {
                   generateIds: true,
                   idPrefix: "right_",
-                  onDblClick: openPreviewLinkRight,
+                  onDblClick: openPreviewLinkRight,                  
                   selectMode: 2
                 });
    });
@@ -531,7 +536,24 @@ function getCourseItemsRight()
 *****************************************************************************/
 function copyItemToRight()
 {
-  alert($(leftList).getSelectedNodes());
+  var leftCourseTreeItems = $("#leftList").dynatree("getSelectedNodes");
+  var itemIDs = [];
+  for (var i = 0; i < leftCourseTreeItems.length; i++)
+  {
+     itemIDs[i] = leftCourseTreeItems[i].data.key;
+  }
+  for (var i = 0; i < itemIDs.length; i++)
+  {
+     //If statement to check if the item exists on the right side.
+     //If it exists add to the request string.
+     //Else Append Copy-######
+  }
+  console.log(itemIDs);
+  alert(leftCourseTreeItems);
+  
+ // $("
+  //Start the process of creating the CopyItems DLAP call.
+  
   /*
   //Finds index value of the selected item.
    var itemIndexSelected = document.getElementById("leftList").selectedIndex;

@@ -315,14 +315,15 @@ span.dynatree-expanded a
 
 span.dynatree-selected a
 {
-	color: green;
 	font-style: italic;
+ 	background-color: #3169C6 !important;
+	color: white !important; /* @ IE6 */
 }
 
 span.dynatree-active a
 {
-	background-color: #3169C6 !important;
-	color: white !important; /* @ IE6 */
+	/* background-color: #fff !important;
+	color: black !important; /* @ IE6 */
 }
 
 /*******************************************************************************
