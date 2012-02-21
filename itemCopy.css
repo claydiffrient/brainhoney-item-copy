@@ -114,3 +114,11 @@ select
 {
    height: 440px;
 }
+
+p#description
+{
+   margin-left: 20%;
+   margin-right: 20%;
+   margin-top: 10px;
+   text-align: center;
+}
