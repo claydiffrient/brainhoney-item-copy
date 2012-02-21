@@ -9,7 +9,6 @@
 <link href="/Resource/14853/Web/JS/fancybox/jquery.fancybox.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="/Resource/14853/Web/JS/jquery-1.6.1.min.js"></script>
 <script type="text/javascript" src="http://byui.brainhoney.com/Resource/7291918/jquery-ui-1.8.17.custom.min.js"></script>
-<script type="text/javascript" src="/Resource/14853/Web/JS/helper.js"></script>
 <script type="text/javascript" src="/Resource/7291918/dynatree/src/jquery.dynatree.js"></script>
 <script type="text/javascript" src="itemCopy2.js" ></script>
 <script type="text/javascript" src="/Resource/14853/Web/JS/fancybox/jquery.fancybox.pack.js"></script>
@@ -21,6 +20,9 @@
 <div id="header" class="center">
 <h1>Copy Items Test</h1>
 </div>
+<p id="description">This tool will allow you to copy items from one course to another.  It will not retain a link to the previous
+item.  Updates to the original item will <span style="font-weight: bold;">NOT</span> be automatically updated in the copied item.</p>
+
 
 <div id="mainContent">
 	
