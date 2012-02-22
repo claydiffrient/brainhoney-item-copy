@@ -536,126 +536,150 @@ function getCourseItemsRight()
 *****************************************************************************/
 function copyItemToRight()
 {
+  //Store the selected nodes into an array of DynatreeNode objects.
   var leftCourseTreeItems = $("#leftList").dynatree("getSelectedNodes");
+  //Create another array to hold just the item IDs.
   var itemIDs = [];
+  //Store the item ID into the new array.
   for (var i = 0; i < leftCourseTreeItems.length; i++)
   {
      itemIDs[i] = leftCourseTreeItems[i].data.key;
   }
+  //Start the CopyItems request string.
+  var copyItemsRequestXML = "<requests>";
+  //Start the CopyResources request string.
+  var copyResourcesRequestXML = "<requests>";
+  //Loop through all the selected ids.
   for (var i = 0; i < itemIDs.length; i++)
   {
-     //If statement to check if the item exists on the right side.
-     //If it exists add to the request string.
-     //Else Append Copy-######
+     //Create a regular expression to match against for resources.
+     var expressionToMatch = new RegExp('Templates\\/Data\\/' + itemIDs[i]);
+     //Create a random number to append if necessary.
+     var randomNumber = Math.floor(Math.random() * 10000001);
+     //Check if the item already exists in the right tree.  If so append a random number.
+     if ($("#rightList").dynatree("getTree").getNodeByKey(itemIDs[i]) != null)
+     {
+        //Build the CopyItems request string.
+        copyItemsRequestXML += "<item sourceentityid='" + LEFT_COURSE_ID;
+        copyItemsRequestXML += "' sourceitemid='" + itemIDs[i];
+        copyItemsRequestXML += "' destinationentityid='" + RIGHT_COURSE_ID;
+        copyItemsRequestXML += "' destinationitemid='" + itemIDs[i] + '_Copy-' + randomNumber + "'/>";
+        //Build the CopyResources request string.
+        //Find the href tag. Determine if it is a resource.
+        $(GLOBAL_LEFT_XML).find("item data href").each(function()
+         {
+            var foundHREF = expressionToMatch.test($(this).text());
+            if (foundHREF)
+            {
+               copyResourcesRequestXML += "<resource sourceentityid='" + LEFT_COURSE_ID;
+               copyResourcesRequestXML += "' sourcepath='" + $(this).text();
+               copyResourcesRequestXML += "' destinationentityid='" + RIGHT_COURSE_ID;
+               copyResourcesRequestXML += "' destinationpath='Templates/Data/" + itemIDs[i] + "_Copy-" + randomNumber + "/'/>";
+            }
+         });
+        //Find the rubric tag.  Copy the rubric.
+        $(GLOBAL_LEFT_XML).find("item data rubric").each(function()
+        {
+            var foundRubric = expressionToMatch.test($(this).text());
+            if (foundRubric)
+            {
+               copyResourcesRequestXML += "<resource sourceentityid='" + LEFT_COURSE_ID;
+               copyResourcesRequestXML += "' sourcepath='" + $(this).text();
+               copyResourcesRequestXML += "' destinationentityid='" + RIGHT_COURSE_ID;
+               copyResourcesRequestXML += "' destinationpath='Templates/Data/" + itemIDs[i] + "_Copy-" + randomNumber + "/'/>";
+            }
+        });
+        var thisItem = itemIDs[i];
+        $(GLOBAL_LEFT_XML).find("item[id ='" + thisItem + "'] attachments attachment").each(function()
+        {
+           copyResourcesRequestXML += "<resource sourceentityid='" + LEFT_COURSE_ID;
+           copyResourcesRequestXML += "' sourcepath='" + $(this).attr("href");
+           copyResourcesRequestXML += "' destinationentityid='" + RIGHT_COURSE_ID + "'/>";
+        });
+     }
+     else
+     {
+        //Build the CopyItems request string.
+        copyItemsRequestXML += "<item sourceentityid='" + LEFT_COURSE_ID;
+        copyItemsRequestXML += "' sourceitemid='" + itemIDs[i];
+        copyItemsRequestXML += "' destinationentityid='" + RIGHT_COURSE_ID;
+        copyItemsRequestXML += "' destinationitemid='" + itemIDs[i] + "'/>";
+        //Build the CopyResources request string.
+        //Find the href tag. Determine if it is a resource.
+        $(GLOBAL_LEFT_XML).find("item data href").each(function()
+         {
+            var foundHREF = expressionToMatch.test($(this).text());
+            if (foundHREF)
+            {
+               copyResourcesRequestXML += "<resource sourceentityid='" + LEFT_COURSE_ID;
+               copyResourcesRequestXML += "' sourcepath='" + $(this).text();
+               copyResourcesRequestXML += "' destinationentityid='" + RIGHT_COURSE_ID;
+               copyResourcesRequestXML += "'/>";
+            }
+         });
+        //Find the rubric tag.  Copy the rubric.
+        $(GLOBAL_LEFT_XML).find("item data rubric").each(function()
+        {
+            var foundRubric = expressionToMatch.test($(this).text());
+            if (foundRubric)
+            {
+               copyResourcesRequestXML += "<resource sourceentityid='" + LEFT_COURSE_ID;
+               copyResourcesRequestXML += "' sourcepath='" + $(this).text();
+               copyResourcesRequestXML += "' destinationentityid='" + RIGHT_COURSE_ID;
+               copyResourcesRequestXML += "'/>";
+            }
+        });
+        var thisItem = itemIDs[i];        
+        $(GLOBAL_LEFT_XML).find("item[id ='" + thisItem + "'] attachments attachment").each(function()
+        {
+           copyResourcesRequestXML += "<resource sourceentityid='" + LEFT_COURSE_ID;
+           copyResourcesRequestXML += "' sourcepath='" + $(this).attr("href");
+           copyResourcesRequestXML += "' destinationentityid='" + RIGHT_COURSE_ID + "'/>";
+        });
+     }
+     
+     
+     
+     //Check to see if the parent node (module/folder) exists in the destination.  If not, add it.
+     //Store the DynaTreeNode object.
+     var itemNode = leftCourseTreeItems[i];
+     //Store the level (level 1 = Module)
+     var level = itemNode.getLevel();
+     //Loop if there is more than just a module.
+     while (level != 1)
+     {
+        //Reduce level to one below the item.
+        level = level - 1; 
+        //Store the key of the parent.
+        var parentID = itemNode.getParent().data.key;
+        //Set the itemNode to the parent node.
+        itemNode = itemNode.getParent(); 
+        //Add the parent items (module/folders) to the copy request if they don't exist already.
+        if ($("#rightList").dynatree("getTree").getNodeByKey(parentID) == null)
+        {
+           copyItemsRequestXML += "<item sourceentityid='" + LEFT_COURSE_ID;
+           copyItemsRequestXML += "' sourceitemid='" + parentID;
+           copyItemsRequestXML += "' destinationentityid='" + RIGHT_COURSE_ID;
+           copyItemsRequestXML += "' destinationitemid='" + parentID + "'/>";
+        }
+     }
   }
-  console.log(itemIDs);
-  alert(leftCourseTreeItems);
   
- // $("
-  //Start the process of creating the CopyItems DLAP call.
+  //Close the copy items request.
+  copyItemsRequestXML += "</requests>";
+  //Close the copy resource request.
+  copyResourcesRequestXML += "</requests>";
   
-  /*
-  //Finds index value of the selected item.
-   var itemIndexSelected = document.getElementById("leftList").selectedIndex;
-   //Finds the ID of the selected item.
-   var selectedID = document.getElementById("leftList").options.item(itemIndexSelected).id;
-   //Finds the ID of the selected node's parent (the module).
-   var parentID = document.getElementById("leftList").options.item(itemIndexSelected).parentNode.id;
-   
-   //Strip "left" flag from selected ID
-   selectedID = selectedID.substring(0,selectedID.length - 5);
-   //Strip "left" flag from parent ID
-   parentID = parentID.substring(0,parentID.length - 5);
-   
+  alert("Copy Items\n" + copyItemsRequestXML);
+  alert("Copy Resources\n" + copyResourcesRequestXML);
+  console.log(copyItemsRequestXML);
 
-   //Variable for the XML string to pass to the CopyItems DLAP command
-   var xmlToPass = "";
-   //Variable for the XML string to pass to the CopyResources DLAP command
-   var resourceXML = "";
-   
-   //Check the existance of the module in the right course.
-   if (!($("#rightList").children("#" + parentID + "_right").length > 0))
-   {
-      //If the module doesn't exist, add the module to the list of things to copy.
-      xmlToPass += '<requests><item sourceentityid="' + LEFT_COURSE_ID;
-      xmlToPass += '" sourceitemid="' + parentID;
-      xmlToPass += '" destinationentityid="' + RIGHT_COURSE_ID;
-      xmlToPass += '" destinationitemid="' + parentID + '_Copy-' + Math.floor(Math.random() * 100001) + '"/>';
-      xmlToPass += '<item sourceentityid="' + LEFT_COURSE_ID;
-      xmlToPass += '" sourceitemid="' + selectedID;
-      xmlToPass += '" destinationentityid="' + RIGHT_COURSE_ID;
-      xmlToPass += '" destinationitemid="' + selectedID + '_Copy-' + Math.floor(Math.random() * 100001) + '"/></requests>';
-   }
-   else
-   {
-      //If the module does exist, copy just the item.
-      xmlToPass += '<requests><item sourceentityid="' + LEFT_COURSE_ID;
-      xmlToPass += '" sourceitemid="' + selectedID;
-      xmlToPass += '" destinationentityid="' + RIGHT_COURSE_ID;
-      xmlToPass += '" destinationitemid="'
-      //Check if the Item already exists in the right course
-      if (!($("#rightList").children().children("#" + selectedID + "_right").length > 0))
-      {
-         //Item doesn't exist then perform straight across copy.
-         xmlToPass += selectedID + '"/></requests>';
-      }
-      else
-      {
-         //Item does exist, append _Copy-RANDOM to the ID.
-         xmlToPass += selectedID + '_Copy-' + Math.floor(Math.random() * 100001) + '"/></requests>';
-      }
-   }
-   
-   //Create an expression to use for matching the resources
-   var expressionToMatch = new RegExp('Templates\\/Data\\/' + selectedID);
-   
-   //Find the href tag. Determine if it is a resource.
-   $(GLOBAL_LEFT_XML).find("item data href").each(function()
-   {
-      var foundHREF = expressionToMatch.test($(this).text());
-      if (foundHREF)
-      {
-         //BUILD XML for DLAP CopyResources
-         resourceXML += "<requests>";
-         resourceXML += "<resource sourceentityid='" + LEFT_COURSE_ID;
-         resourceXML += "' sourcepath='" + $(this).text();
-         resourceXML += "' destinationentityid='" + RIGHT_COURSE_ID + "' />";
-      }
-   });
-
-   //Find the rubric tag.  Copy the rubric.
-   $(GLOBAL_LEFT_XML).find("item data rubric").each(function()
-   {
-      var foundRubric = expressionToMatch.test($(this).text());
-      //BUILD XML for DLAP CopyResources
-      if (foundRubric)
-      {
-         //Check if another resource is already being copied.
-         //Add the requests tag if necessary.
-         if (resourceXML.length == 0)
-            resourceXML += "<requests>";
-         
-         resourceXML += "<resource sourceentityid='" + LEFT_COURSE_ID;
-         resourceXML += "' sourcepath='" + $(this).text();
-         resourceXML += "' destinationentityid='" + RIGHT_COURSE_ID + "' />";      
-      }
-   });
-
-   //Find the attachments tag
-   $(GLOBAL_LEFT_XML).find("item id[value='"+ selectedID +"'] data attachments attachment").each(function()
-   {
-      //BUILD XML for DLAP CopyResources
-      alert("Found Attach= " + $(this).text());      
-   });
-   
-   //Close out the resource XML file if necessary
-   if (resourceXML.length > 0)
-      resourceXML += "</requests>";
-   
+  if (copyItemsRequestXML.length > 21)
+  {
       //Uses the Frame API to initiate the DLAP to copy the item.
       FRAME_API.executeCommand("copyitems", null,
                         { method: 'POST',
-                          xmlData: xmlToPass,
+                          xmlData: copyItemsRequestXML,
                           callback: function(options, success, response)
                                     {
                                        if (success && response.details[0].code == 'OK' && response.details[1].code == 'OK')
@@ -671,12 +695,17 @@ function copyItemToRight()
                                     }
                         }
                         );
-   
-   
+   }
+   else
+   {
+      alert("Nothing selected to copy");
+   }
+   if (copyResourcesRequestXML.length > 21)
+   {
       //Uses the Frame API to initiate the DLAP to copy the resources.
       FRAME_API.executeCommand("copyresources", null,
                         { method: 'POST',
-                          xmlData: resourceXML,
+                          xmlData: copyResourcesRequestXML,
                           callback: function(options, success, response)
                                     {
                                        if (success && response.details[0].code == 'OK' && response.details[1].code == 'OK')
@@ -691,6 +720,26 @@ function copyItemToRight()
                                     }
                         }
                         );
+   }
+   else
+   {
+      alert("No Resources to copy");
+   }
+  /*
+
+
+   //Find the attachments tag
+   $(GLOBAL_LEFT_XML).find("item id[value='"+ selectedID +"'] data attachments attachment").each(function()
+   {
+      //BUILD XML for DLAP CopyResources
+      alert("Found Attach= " + $(this).text());      
+   });
+   
+   //Close out the resource XML file if necessary
+   if (resourceXML.length > 0)
+      resourceXML += "</requests>";
+   
+
 
    //Run getCourseItemsRight() to refresh the copied to list.
    getCourseItemsRight();
