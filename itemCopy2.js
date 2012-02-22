@@ -589,6 +589,7 @@ function copyItemToRight()
                copyResourcesRequestXML += "' destinationpath='Templates/Data/" + itemIDs[i] + "_Copy-" + randomNumber + "/'/>";
             }
         });
+        //Find the attachments and copy them.
         var thisItem = itemIDs[i];
         $(GLOBAL_LEFT_XML).find("item[id ='" + thisItem + "'] attachments attachment").each(function()
         {
@@ -629,6 +630,7 @@ function copyItemToRight()
                copyResourcesRequestXML += "'/>";
             }
         });
+        //Find the attachments and copy them.
         var thisItem = itemIDs[i];        
         $(GLOBAL_LEFT_XML).find("item[id ='" + thisItem + "'] attachments attachment").each(function()
         {
@@ -725,24 +727,5 @@ function copyItemToRight()
    {
       alert("No Resources to copy");
    }
-  /*
-
-
-   //Find the attachments tag
-   $(GLOBAL_LEFT_XML).find("item id[value='"+ selectedID +"'] data attachments attachment").each(function()
-   {
-      //BUILD XML for DLAP CopyResources
-      alert("Found Attach= " + $(this).text());      
-   });
-   
-   //Close out the resource XML file if necessary
-   if (resourceXML.length > 0)
-      resourceXML += "</requests>";
-   
-
-
-   //Run getCourseItemsRight() to refresh the copied to list.
-   getCourseItemsRight();
-   */
 }
          
