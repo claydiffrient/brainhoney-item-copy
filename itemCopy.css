@@ -67,9 +67,8 @@ button:hover
 
 select
 {
-   width: 98%;
-   height: 88%;
-   margin: 2px;
+   width: 100%;
+   margin: 0px;
 }
 
 #header

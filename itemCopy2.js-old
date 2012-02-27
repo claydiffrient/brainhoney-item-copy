@@ -1,4 +1,4 @@
-﻿/*****************************************************************************
+/*****************************************************************************
 * This is a script permitting the Item Copy Tool to function.
 *
 *****************************************************************************/
@@ -98,13 +98,10 @@ function openPreviewLinkRight(node, event)
    for (i = 0; i < loopCount; i++)
    {
       if ((RIGHT_COURSE_ID == FRAME_API.enrollments[i].courseId))
-	  {
          courseEnrollment = FRAME_API.enrollments[i].id;
-		 break;
-	  }
    }
    //Start building the actual preview link
-   var builtLink = "http://byui.brainhoney.com/Component/ActivityPlayer?enrollmentid=";
+   var builtLink = "http://byui.brainhoney.com/Component/ActivityPlayer?enrollmentid="
    //Append the enrollmentid to the preview link.
    builtLink += courseEnrollment;
    builtLink += "&itemid=";
@@ -145,9 +142,9 @@ function listCourses()
                                   //Find all the enrollments within the response XML.
                                   $('enrollments enrollment entity', response.responseXML).each(function()
                                   {
-                                     //Add the course to the courses array.
+                                     //Add the  to the courses array.
                                      var title = $(this).attr("title");
-                                     if ($(this).attr("term") !== "" )
+                                     if ($(this).attr("term") != "" )
                                         title += " - " + $(this).attr("term");
                                      var thisCourse = new Course(title, $(this).attr("id"));
                                      courses.push(thisCourse);
@@ -198,7 +195,7 @@ function changeCourseID(whichSide)
 {
    if (whichSide == "left")
    {
-      if (document.getElementById("chooseLeft").selectedIndex !== 0)
+      if (document.getElementById("chooseLeft").selectedIndex != 0)
       {
          LEFT_COURSE_ID = document.getElementById("chooseLeft").options[document.getElementById("chooseLeft").selectedIndex].id;
          getCourseItemsLeft();
@@ -206,7 +203,7 @@ function changeCourseID(whichSide)
    }
    if (whichSide == "right")
    {
-      if (document.getElementById("chooseRight").selectedIndex !== 0)
+      if (document.getElementById("chooseRight").selectedIndex != 0)
       {
          RIGHT_COURSE_ID = document.getElementById("chooseRight").options[document.getElementById("chooseRight").selectedIndex].id;
          getCourseItemsRight();
@@ -224,7 +221,7 @@ function clearList()
    var rightLength = document.getElementById("rightList").options.length;
 
 	//Checks to see if there are any items in the left listing currently.
-   if (leftLength !== 0)
+   if (leftLength != 0)
    {
       //Removes any modules.
       $("#leftList").empty();
@@ -237,7 +234,7 @@ function clearList()
    }
    
    //Checks to see if there are any items in the right listing currently.
-   if (rightLength !== 0)
+   if (rightLength != 0)
    {
       //Removes any modules.
       $("#rightList").empty();
@@ -637,7 +634,7 @@ function copyItemToRight()
               if (itemList[j].getAttribute("id") == itemIDs[i])
               {
                  //Check to see if the item exists already on the right course.  Append random number if needed.
-                 if ($("#rightList").dynatree("getTree").getNodeByKey(itemIDs[i]) !== null)
+                 if ($("#rightList").dynatree("getTree").getNodeByKey(itemIDs[i]) != null)
                  {
                     itemList[j].setAttribute("itemid", itemIDs[i] + "_Copy-" + Math.floor(Math.random() * 10000001));
                  }
@@ -686,7 +683,7 @@ function copyItemToRight()
             //Create a random number to append if necessary.
             var randomNumber = Math.floor(Math.random() * 10000001);
             //Check if the item already exists in the right tree.  If so append a random number.
-            if ($("#rightList").dynatree("getTree").getNodeByKey(itemIDs[i]) !== null)
+            if ($("#rightList").dynatree("getTree").getNodeByKey(itemIDs[i]) != null)
             {
                if (!skipCopyItems)
                {
@@ -792,7 +789,7 @@ function copyItemToRight()
            //Set the itemNode to the parent node.
            itemNode = itemNode.getParent(); 
            //Add the parent items (module/folders) to the copy request if they don't exist already.
-           if ($("#rightList").dynatree("getTree").getNodeByKey(parentID) === null)
+           if ($("#rightList").dynatree("getTree").getNodeByKey(parentID) == null)
            {
               copyItemsRequestXML += "<item sourceentityid='" + LEFT_COURSE_ID;
               copyItemsRequestXML += "' sourceitemid='" + parentID;

@@ -10,7 +10,7 @@
 <script type="text/javascript" src="/Resource/14853/Web/JS/jquery-1.6.1.min.js"></script>
 <script type="text/javascript" src="http://byui.brainhoney.com/Resource/7291918/jquery-ui-1.8.17.custom.min.js"></script>
 <script type="text/javascript" src="/Resource/7291918/dynatree/src/jquery.dynatree.js"></script>
-<script type="text/javascript" src="/Resource/7291918/itemCopy2.js" ></script>
+<script type="text/javascript" src="/Resource/7291918/itemCopy3.js" ></script>
 <script type="text/javascript" src="/Resource/14853/Web/JS/fancybox/jquery.fancybox.pack.js"></script>
 
 </head>
@@ -56,7 +56,5 @@ item.  Updates to the original item will <span style="font-weight: bold;">NOT</s
       </div>
    </div>
 </div>
-<div class="center">
-Please use <a href="https://docs.google.com/spreadsheet/viewform?formkey=dDNUTzUzbUQ1a18xWmIxdHRBckpxS2c6MQ#gid=0">this form</a> to report errors.</a></div>
 </body>
 </html>

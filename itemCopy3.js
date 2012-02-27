@@ -67,7 +67,10 @@ function openPreviewLinkLeft(node, event)
    for (i = 0; i < loopCount; i++)
    {
       if ((LEFT_COURSE_ID == FRAME_API.enrollments[i].courseId))
+	  {
          courseEnrollment = FRAME_API.enrollments[i].id;
+	     break;
+	  }
    }
    //Start building the actual preview link
    var builtLink = "http://byui.brainhoney.com/Component/ActivityPlayer?enrollmentid=";
@@ -98,10 +101,7 @@ function openPreviewLinkRight(node, event)
    for (i = 0; i < loopCount; i++)
    {
       if ((RIGHT_COURSE_ID == FRAME_API.enrollments[i].courseId))
-	  {
          courseEnrollment = FRAME_API.enrollments[i].id;
-		 break;
-	  }
    }
    //Start building the actual preview link
    var builtLink = "http://byui.brainhoney.com/Component/ActivityPlayer?enrollmentid=";
